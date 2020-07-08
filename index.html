@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.css" />
+        <link href="style2.css" rel="stylesheet">
+        <link href="style.css" rel="stylesheet">
+        <link href="login.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.js"></script>
+    </head>
+    
+    <body>
+        
+        <div id="login_div" class="main-div2">
+
+            <div class="heading0">
+                <label id="l0">VEHICLE DETECTION PORTAL</label>
+            </div>
+            
+            <div class="main-div">
+                <img src="logo.png">
+                <br>
+                <input type="email" placeholder="Username" id="email_field" />
+                <input type="password" placeholder="Password" id="password_field" />
+            
+                <button onclick="login()">Login</button>
+            </div>
+        </div>
+
+        <br>
+        
+        <div id="user_div" class="loggedin-div">
+            <div id='map'></div>    
+            <div class="div1">       
+                
+                <label class="l1">Enter the Vehicle Number</label>
+                <input id = "numberField" class="bg-white rounded border border-gray-400 focus:outline-none focus:border-indigo-500 text-base px-4 py-2 mb-4" 
+                placeholder="e.g. MH12RN1289" type="text">
+                
+                <button class="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg" onclick="start()">Submit</button>
+                <button class="logout" onclick="logout()">Logout</button>
+            </div>
+    
+            <div class = "div1">
+                <label id="l2">---</label>
+                <br><br>
+                <label id="l3">---</label>
+            </div>
+        </div>
+
+        <!-- Configuration files of firebase -->
+        <script src="https://www.gstatic.com/firebasejs/7.15.3/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.15.3/firebase-database.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.15.3/firebase-analytics.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.15.3/firebase.js"></script>
+
+        <!-- Reverse Geocoding API's -->
+        <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js" type="text/javascript" charset="utf-8"></script>
+        <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
+        <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js" type="text/javascript" charset="utf-8"></script>
+
+        <script>
+            
+            // Your web app's Firebase configuration
+            var firebaseConfig = {
+                apiKey: "AIzaSyAtlLhBfqL06d8E7sLYj-sMv7z677gyYF0",
+                authDomain: "sample-796d9.firebaseapp.com",
+                databaseURL: "https://sample-796d9.firebaseio.com",
+                projectId: "sample-796d9",
+                storageBucket: "sample-796d9.appspot.com",
+                messagingSenderId: "872927346012",
+                appId: "1:872927346012:web:9c93d0f4f05b445662d599",
+                measurementId: "G-QDDYKT59KB"
+            };
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+            firebase.analytics();
+
+            // Initialize the platform object:
+            const platform = new H.service.Platform({
+                'apikey': 'B8mFn_Fqjue7VBRAJ2DyciA6Niv2yWKbK_6Sd1iZiJg'
+            });
+
+            const geocoderService = platform.getGeocodingService();
+            
+
+            // Variable declaration
+            var lati = 0;
+            var long = 0;
+            var time = 0;
+            var date = 0;
+            var target;
+            var marker;
+            var address;
+
+            //Adding map to the site using maptiler API keys
+            var map = L.map('map').setView([0, 0], 1);
+                L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=TIXtt1J4dmTxkPObOKhP',{
+                    tileSize: 512,
+                    zoomOffset: -1,
+                    minZoom: 1,
+                    crossOrigin: true
+                }).addTo(map);
+
+            //This function is the main function
+            function start(){
+                database = firebase.database();
+                var ref = database.ref('/result');
+                target = document.getElementById("numberField").value;
+                ref.on('value', gotData, errData);
+            }
+
+
+            function gotData(data)
+            {
+                var scores = data.val(); 
+                //console.log(scores);
+                var keys = Object.keys(scores); 
+                //console.log(keys);
+                
+                for(var i = 0; i < keys.length; i++)
+                {
+                    var temp = scores[keys[i]];
+                    var k1 = Object.keys(temp)[0];
+                
+                    if(target == k1){
+                        lati = scores[keys[i]][Object.keys(temp)[0]][0];
+                        long = scores[keys[i]][Object.keys(temp)[0]][1];
+                        time = scores[keys[i]][Object.keys(temp)[0]][2];
+                        date = scores[keys[i]][Object.keys(temp)[0]][3];
+                        break;
+                    }
+                }
+                
+                
+                if(i == keys.length){
+                    //console.log("Data not found!");
+                    document.getElementById("l2").innerHTML = "Data not found!";
+                    document.getElementById("l3").innerHTML = "---";
+                }
+                else{
+                    //console.log(lati, long);
+                    createMap();
+                    start_geocoding();
+                    //getReverseGeocodingData(lati, long);
+                    //console.log(address);
+                }
+                
+            }
+
+            function errData(err)
+            {
+                console.log('Error!');
+                console.log(err); 
+            }
+
+            function createMap(){
+                if(marker != undefined)
+                    map.removeLayer(marker);
+                marker = L.marker([lati, long]).addTo(map);
+                map.flyTo([lati, long], 13);
+            }
+
+            //Function for Reverse Geocoding using HERE Developers API key
+            const reverseGeocode = coords => {
+                return new Promise((resolve, reject) => { 
+                    geocoderService.reverseGeocode(
+                        {
+                            prox : coords.Latitude + "," + coords.Longitude,
+                            mode : "retrieveAddresses",
+                            maxresults : 1
+                        },
+                        success => {
+                            resolve(success);
+                        },
+                        reject => {
+                            reject(error);
+                        }
+                    )
+                });
+            }
+
+            const start_geocoding = async() => {
+
+                const location = await reverseGeocode({ Latitude : lati, Longitude : long });
+                const location_ = location.Response.View[0].Result[0].Location.Address.Label;
+                //console.log(location_);
+                document.getElementById("l2").innerHTML = 'Last location : ' + location_;   
+                document.getElementById("l3").innerHTML = 'Captured at ' + time + ' on ' + date;
+                
+            }
+
+        </script>
+        <script src="auth.js"></script>
+        
+    </body>
+</html>
+
+
+
+
+
