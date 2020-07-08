@@ -1,0 +1,52 @@
+#map {
+    border: 5px gray solid;
+    width: 80%;
+    height: 390px;
+    margin : auto;
+    padding : 20px;
+    
+}
+body{
+    background-color: black;
+    background-image: url('http://web.stanford.edu/group/sias/cgi-bin/wordpress/wp-content/uploads/2013/12/world-map-wallpaper-4053-hd-wallpapers1.jpg');
+      
+}
+
+h2{
+    color: white;
+}
+
+.l1{
+    color: rgb(0, 0, 0);
+    border: 8px goldenrod solid;
+    background-color: goldenrod;
+    font-weight: 600;
+    font-family: 🇧🇴 ;
+    font-size: 150%;
+
+}
+
+#l0{
+    color: darkslategrey;
+    border: 9px rgb(153, 127, 12) solid;
+    background-color: goldenrod;
+    font-weight: 800;
+    font-family: 🇧🇴 ;
+    font-size: 200%;
+}
+
+#l2, #l3{
+    color: rgb(0, 0, 0);
+    border: 9px greenyellow solid;
+    background-color: greenyellow;
+    font-weight: 600;
+    font-family: 🇧🇴 ;
+    font-size: 150%;
+}
+
+.div1{
+    text-align: center;
+    margin: 0 auto;
+    padding: 20px;
+    width: 80%;
+}
