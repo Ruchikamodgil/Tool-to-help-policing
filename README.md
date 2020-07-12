@@ -19,7 +19,7 @@ Pass any recording to [this](https://github.com/Ruchikamodgil/Tool-to-help-polic
 ### Result
 ![img](https://github.com/Ruchikamodgil/Tool-to-help-policing/blob/master/result.png)
 
-### After the detection of License Plates, the information get updated into the database and the police authorities can fetch the innformation using this Dektop App.
+### After the detection of License Plates, the information get updated into the database and the police authorities can fetch the information using this Dektop App.
 ![img](https://github.com/Ruchikamodgil/Tool-to-help-policing/blob/master/web%20page.png)
 
 
