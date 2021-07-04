@@ -1,5 +1,7 @@
 # Tool-To-Help-Policing
 It is a Vehicle Tracking Web App specially designed for Police Authorities to find the required vehicle very easily.
+This project was built in Gurugram Police Cyber Security Internship under guidance of `Mr Rakshit Tandan` (Cyber Security Expert). 
+
 ## Working of Model
 First of all, the input from cctv camera will get processed into the DL Algorithm for detection of License Plate of the vehicle. After the number on the license plate get detected,Location of the camera with the number plate will be saved into the database with date and time. So in website if we want to find the location of any vehicle which is connected to any crime or the any type of F.I.R is done for that vehicle ,it can be found easliy.
 #### Install these packages to run the License Plate detection Model.
@@ -27,4 +29,4 @@ Pass any recording to [this](https://github.com/Ruchikamodgil/Tool-to-help-polic
 ![img](https://github.com/Ruchikamodgil/Tool-to-help-policing/blob/master/web%20results.png)
 
 
-
+## [Link](https://drive.google.com/file/d/1HKoMZYo1Nr1DIwAz_hGTtDlGtpqxFk75/view?usp=sharing) to demo video(it contains the proper demo on how to use this with explained Features)
